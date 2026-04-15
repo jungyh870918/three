@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js Study Notes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+            color: #37352f;
+            background-color: #ffffff;
+            line-height: 1.5;
+        }
+        .notion-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 80px 40px;
+        }
+        h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; color: #37352f; }
+        h2 { font-size: 1.8rem; font-weight: 600; margin-top: 2.5rem; margin-bottom: 1rem; border-bottom: 1px solid #edece9; padding-bottom: 0.5rem; }
+        h3 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+        
+        /* Notion Callout Style */
+        .callout {
+            display: flex;
+            padding: 16px;
+            background-color: #f1f1ef;
+            border-radius: 4px;
+            margin: 1rem 0;
+            align-items: flex-start;
+        }
+        .callout-emoji { margin-right: 12px; font-size: 1.2rem; }
+        
+        /* Notion Code Block */
+        pre {
+            background-color: #f7f6f3 !important;
+            border-radius: 4px !important;
+            padding: 20px !important;
+            margin: 1.5rem 0 !important;
+        }
+        code { font-family: 'JetBrains Mono', monospace !important; font-size: 0.9rem !important; }
+        
+        .property-tag {
+            display: inline-block;
+            padding: 0 6px;
+            border-radius: 3px;
+            background: #efefef;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-right: 4px;
+        }
+        
+        /* Sidebar/Table of Contents */
+        .toc {
+            position: fixed;
+            left: calc(50% + 480px);
+            top: 100px;
+            width: 200px;
+            display: none;
+        }
+        @media (min-width: 1400px) { .toc { display: block; } }
+        .toc-item { color: #73726e; font-size: 0.9rem; margin-bottom: 8px; cursor: pointer; }
+        .toc-item:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <div class="notion-container">
+        <header class="mb-12">
+            <div class="text-6xl mb-4">🧊</div>
+            <h1>Three.js 핵심 개념 정리</h1>
+            <p class="text-gray-500">웹 프로젝트에서 3D 환경을 구축하기 위한 치트시트 (Younghak)</p>
+            
+            <div class="flex gap-4 mt-6 text-sm text-gray-400 border-b pb-4">
+                <span>📅 Created: 2026-04-15</span>
+                <span>🏷️ Category: WebGL, Three.js</span>
+            </div>
+        </header>
+
+        <div class="mb-10 text-sm text-gray-600 bg-gray-50 p-4 rounded border border-gray-100">
+            <div class="font-bold mb-2">목차</div>
+            <ul class="list-disc ml-5 space-y-1">
+                <li><a href="#basics" class="hover:underline">기초 설정 (The Big Three)</a></li>
+                <li><a href="#objects" class="hover:underline">객체 구성 (Mesh)</a></li>
+                <li><a href="#transform" class="hover:underline">좌표 및 변형 (Transform)</a></li>
+                <li><a href="#group" class="hover:underline">그룹화 (Scene Graph)</a></li>
+                <li><a href="#camera" class="hover:underline">카메라 상세 설정</a></li>
+                <li><a href="#animation" class="hover:underline">애니메이션 (Loop & GSAP)</a></li>
+            </ul>
+        </div>
+
+        <section id="basics">
+            <h2>1. 기초 설정 (The Big Three)</h2>
+            <p>Three.js에서 화면을 띄우기 위해 반드시 필요한 세 요소입니다.</p>
+            <div class="callout">
+                <span class="callout-emoji">💡</span>
+                <div>
+                    <strong>Scene:</strong> 무대, <strong>Camera:</strong> 눈, <strong>Renderer:</strong> 출력기라고 이해하면 쉽습니다.
+                </div>
+            </div>
+            
+            <pre><code class="language-javascript">const scene = new THREE.Scene()
+const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height)
+const renderer = new THREE.WebGLRenderer({ canvas: canvas })
+
+renderer.setSize(sizes.width, sizes.height)
+renderer.render(scene, camera)</code></pre>
+        </section>
+
+        <section id="objects">
+            <h2>2. 객체 구성 (Mesh)</h2>
+            <p>Mesh는 형태를 정의하는 <strong>Geometry</strong>와 겉모습을 정의하는 <strong>Material</strong>의 결합입니다.</p>
+            
+            <pre><code class="language-javascript">const geometry = new THREE.BoxGeometry(1, 1, 1) // 뼈대
+const material = new THREE.MeshBasicMaterial({ color: 0xff0000 }) // 피부
+const mesh = new THREE.Mesh(geometry, material) // 완성된 물체
+scene.add(mesh)</code></pre>
+        </section>
+
+        <section id="transform">
+            <h2>3. 좌표 및 변형 (Transform)</h2>
+            <p>오른손 좌표계를 기준으로 물체를 제어합니다.</p>
+            <div class="flex gap-2 my-2">
+                <span class="property-tag">Position</span>
+                <span class="property-tag">Scale</span>
+                <span class="property-tag">Rotation</span>
+            </div>
+            <pre><code class="language-javascript">// 개별 축 제어
+mesh.position.x = 2
+mesh.scale.y = 0.5
+mesh.rotation.z = Math.PI * 0.25 // 45도
+
+// 한 번에 설정
+mesh.position.set(1, 2, 3)</code></pre>
+        </section>
+
+        <section id="group">
+            <h2>4. 그룹화 (Scene Graph)</h2>
+            <p>여러 개의 Mesh를 <code>Group</code>에 담으면 부모의 움직임을 자식이 그대로 따릅니다.</p>
+            <pre><code class="language-javascript">const group = new THREE.Group()
+scene.add(group)
+
+const cube1 = new THREE.Mesh(...)
+group.add(cube1)
+
+group.rotation.y = 1 // 그룹 전체가 회전</code></pre>
+        </section>
+
+        <section id="camera">
+            <h2>5. 카메라 상세 설정</h2>
+            <p>PerspectiveCamera는 원근법을 제공합니다.</p>
+            
+            <pre><code class="language-javascript">const camera = new THREE.PerspectiveCamera(
+    75, // fov: 시야각 (세로 방향)
+    sizes.width / sizes.height, // aspect: 종횡비
+    0.1, // near: 이보다 가까우면 안 보임
+    100 // far: 이보다 멀면 안 보임
+)</code></pre>
+        </section>
+
+        <section id="animation">
+            <h2>6. 애니메이션 (Loop & GSAP)</h2>
+            <p>화면을 매 프레임 다시 그리는 루프를 생성합니다.</p>
+            <div class="callout" style="background-color: #ebf5fe;">
+                <span class="callout-emoji">🚀</span>
+                <div>
+                    <strong>GSAP:</strong> 복잡한 애니메이션을 구현할 때 사용하는 표준 라이브러리입니다.
+                </div>
+            </div>
+            <pre><code class="language-javascript">const clock = new THREE.Clock()
+
+const tick = () => {
+    const elapsedTime = clock.getElapsedTime()
+    
+    // 물체 회전
+    mesh.rotation.y = elapsedTime
+    
+    // 다시 렌더링 및 루프
+    renderer.render(scene, camera)
+    window.requestAnimationFrame(tick)
+}
+tick()
+
+// GSAP 예시
+gsap.to(mesh.position, { duration: 1, x: 2 })</code></pre>
+        </section>
+
+        <footer class="mt-20 pt-10 border-t text-sm text-gray-400 text-center">
+            © 2026 Younghak. Study hard and Build Great Things.
+        </footer>
+    </div>
+
+    <script>
+        // 코드 하이라이팅 적용
+        hljs.highlightAll();
+    </script>
+</body>
+</html>
