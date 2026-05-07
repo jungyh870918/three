@@ -1,183 +1,277 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Three.js Study Notes</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+    />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    
+
     <style>
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
-            color: #37352f;
-            background-color: #ffffff;
-            line-height: 1.5;
-        }
-        .notion-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 80px 40px;
-        }
-        h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; color: #37352f; }
-        h2 { font-size: 1.8rem; font-weight: 600; margin-top: 2.5rem; margin-bottom: 1rem; border-bottom: 1px solid #edece9; padding-bottom: 0.5rem; }
-        h3 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; }
-        
-        /* Notion Callout Style */
-        .callout {
-            display: flex;
-            padding: 16px;
-            background-color: #f1f1ef;
-            border-radius: 4px;
-            margin: 1rem 0;
-            align-items: flex-start;
-        }
-        .callout-emoji { margin-right: 12px; font-size: 1.2rem; }
-        
-        /* Notion Code Block */
-        pre {
-            background-color: #f7f6f3 !important;
-            border-radius: 4px !important;
-            padding: 20px !important;
-            margin: 1.5rem 0 !important;
-        }
-        code { font-family: 'JetBrains Mono', monospace !important; font-size: 0.9rem !important; }
-        
-        .property-tag {
-            display: inline-block;
-            padding: 0 6px;
-            border-radius: 3px;
-            background: #efefef;
-            font-size: 0.85rem;
-            font-weight: 500;
-            margin-right: 4px;
-        }
-        
-        /* Sidebar/Table of Contents */
+      body {
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Helvetica,
+          "Apple Color Emoji",
+          Arial,
+          sans-serif,
+          "Segoe UI Emoji",
+          "Segoe UI Symbol";
+        color: #37352f;
+        background-color: #ffffff;
+        line-height: 1.5;
+      }
+      .notion-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 80px 40px;
+      }
+      h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: #37352f;
+      }
+      h2 {
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin-top: 2.5rem;
+        margin-bottom: 1rem;
+        border-bottom: 1px solid #edece9;
+        padding-bottom: 0.5rem;
+      }
+      h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      /* Notion Callout Style */
+      .callout {
+        display: flex;
+        padding: 16px;
+        background-color: #f1f1ef;
+        border-radius: 4px;
+        margin: 1rem 0;
+        align-items: flex-start;
+      }
+      .callout-emoji {
+        margin-right: 12px;
+        font-size: 1.2rem;
+      }
+
+      /* Notion Code Block */
+      pre {
+        background-color: #f7f6f3 !important;
+        border-radius: 4px !important;
+        padding: 20px !important;
+        margin: 1.5rem 0 !important;
+      }
+      code {
+        font-family: "JetBrains Mono", monospace !important;
+        font-size: 0.9rem !important;
+      }
+
+      .property-tag {
+        display: inline-block;
+        padding: 0 6px;
+        border-radius: 3px;
+        background: #efefef;
+        font-size: 0.85rem;
+        font-weight: 500;
+        margin-right: 4px;
+      }
+
+      /* Sidebar/Table of Contents */
+      .toc {
+        position: fixed;
+        left: calc(50% + 480px);
+        top: 100px;
+        width: 200px;
+        display: none;
+      }
+      @media (min-width: 1400px) {
         .toc {
-            position: fixed;
-            left: calc(50% + 480px);
-            top: 100px;
-            width: 200px;
-            display: none;
+          display: block;
         }
-        @media (min-width: 1400px) { .toc { display: block; } }
-        .toc-item { color: #73726e; font-size: 0.9rem; margin-bottom: 8px; cursor: pointer; }
-        .toc-item:hover { text-decoration: underline; }
-        
-        a { color: inherit; text-decoration: none; }
+      }
+      .toc-item {
+        color: #73726e;
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+        cursor: pointer;
+      }
+      .toc-item:hover {
+        text-decoration: underline;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <div class="notion-container">
-        <header class="mb-12">
-            <div class="text-6xl mb-4">🧊</div>
-            <h1>Three.js 핵심 개념 정리</h1>
-            <p class="text-gray-500">웹 프로젝트에서 3D 환경을 구축하기 위한 치트시트 (Younghak)</p>
-            
-            <div class="flex gap-4 mt-6 text-sm text-gray-400 border-b pb-4">
-                <span>📅 Created: 2026-04-15</span>
-                <span>🏷️ Category: WebGL, Three.js</span>
-            </div>
-        </header>
+      <header class="mb-12">
+        <div class="text-6xl mb-4">🧊</div>
+        <h1>Three.js 핵심 개념 정리</h1>
+        <p class="text-gray-500">
+          웹 프로젝트에서 3D 환경을 구축하기 위한 치트시트 (Younghak)
+        </p>
 
-        <div class="mb-10 text-sm text-gray-600 bg-gray-50 p-4 rounded border border-gray-100">
-            <div class="font-bold mb-2">목차</div>
-            <ul class="list-disc ml-5 space-y-1">
-                <li><a href="#basics" class="hover:underline">1. 기초 설정 (The Big Three)</a></li>
-                <li><a href="#objects" class="hover:underline">2. 객체 구성 (Mesh)</a></li>
-                <li><a href="#transform" class="hover:underline">3. 좌표 및 변형 (Transform)</a></li>
-                <li><a href="#group" class="hover:underline">4. 그룹화 (Scene Graph)</a></li>
-                <li><a href="#camera" class="hover:underline">5. 카메라 상세 설정</a></li>
-                <li><a href="#animation" class="hover:underline">6. 애니메이션 (Loop & GSAP)</a></li>
-                <li><a href="#geometry-deep" class="hover:underline">7. Geometry (기하학적 구조) 심화</a></li>
-                <li><a href="#debug-ui" class="hover:underline">8. Debug UI (lil-gui) 활용</a></li>
-                <li><a href="#optimization" class="hover:underline">9. 성능 최적화 및 메모리 관리</a></li>
-            </ul>
+        <div class="flex gap-4 mt-6 text-sm text-gray-400 border-b pb-4">
+          <span>📅 Created: 2026-04-15</span>
+          <span>🏷️ Category: WebGL, Three.js</span>
+        </div>
+      </header>
+
+      <div
+        class="mb-10 text-sm text-gray-600 bg-gray-50 p-4 rounded border border-gray-100"
+      >
+        <div class="font-bold mb-2">목차</div>
+        <ul class="list-disc ml-5 space-y-1">
+          <li>
+            <a href="#basics" class="hover:underline"
+              >1. 기초 설정 (The Big Three)</a
+            >
+          </li>
+          <li>
+            <a href="#objects" class="hover:underline">2. 객체 구성 (Mesh)</a>
+          </li>
+          <li>
+            <a href="#transform" class="hover:underline"
+              >3. 좌표 및 변형 (Transform)</a
+            >
+          </li>
+          <li>
+            <a href="#group" class="hover:underline">4. 그룹화 (Scene Graph)</a>
+          </li>
+          <li>
+            <a href="#camera" class="hover:underline">5. 카메라 상세 설정</a>
+          </li>
+          <li>
+            <a href="#animation" class="hover:underline"
+              >6. 애니메이션 (Loop & GSAP)</a
+            >
+          </li>
+          <li>
+            <a href="#geometry-deep" class="hover:underline"
+              >7. Geometry (기하학적 구조) 심화</a
+            >
+          </li>
+          <li>
+            <a href="#debug-ui" class="hover:underline"
+              >8. Debug UI (lil-gui) 활용</a
+            >
+          </li>
+          <li>
+            <a href="#optimization" class="hover:underline"
+              >9. 성능 최적화 및 메모리 관리</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <section id="basics">
+        <h2>1. 기초 설정 (The Big Three)</h2>
+        <p>Three.js에서 화면을 띄우기 위해 반드시 필요한 세 요소입니다.</p>
+        <div class="callout">
+          <span class="callout-emoji">💡</span>
+          <div>
+            <strong>Scene:</strong> 무대, <strong>Camera:</strong> 눈,
+            <strong>Renderer:</strong> 출력기라고 이해하면 쉽습니다.
+          </div>
         </div>
 
-        <section id="basics">
-            <h2>1. 기초 설정 (The Big Three)</h2>
-            <p>Three.js에서 화면을 띄우기 위해 반드시 필요한 세 요소입니다.</p>
-            <div class="callout">
-                <span class="callout-emoji">💡</span>
-                <div>
-                    <strong>Scene:</strong> 무대, <strong>Camera:</strong> 눈, <strong>Renderer:</strong> 출력기라고 이해하면 쉽습니다.
-                </div>
-            </div>
-            
-            <pre><code class="language-javascript">const scene = new THREE.Scene()
+        <pre><code class="language-javascript">const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height)
 const renderer = new THREE.WebGLRenderer({ canvas: canvas })
 
 renderer.setSize(sizes.width, sizes.height)
 renderer.render(scene, camera)</code></pre>
-        </section>
+      </section>
 
-        <section id="objects">
-            <h2>2. 객체 구성 (Mesh)</h2>
-            <p>Mesh는 형태를 정의하는 <strong>Geometry</strong>와 겉모습을 정의하는 <strong>Material</strong>의 결합입니다.</p>
-            
-            <pre><code class="language-javascript">const geometry = new THREE.BoxGeometry(1, 1, 1) // 뼈대
+      <section id="objects">
+        <h2>2. 객체 구성 (Mesh)</h2>
+        <p>
+          Mesh는 형태를 정의하는 <strong>Geometry</strong>와 겉모습을 정의하는
+          <strong>Material</strong>의 결합입니다.
+        </p>
+
+        <pre><code class="language-javascript">const geometry = new THREE.BoxGeometry(1, 1, 1) // 뼈대
 const material = new THREE.MeshBasicMaterial({ color: 0xff0000 }) // 피부
 const mesh = new THREE.Mesh(geometry, material) // 완성된 물체
 scene.add(mesh)</code></pre>
-        </section>
+      </section>
 
-        <section id="transform">
-            <h2>3. 좌표 및 변형 (Transform)</h2>
-            <p>오른손 좌표계를 기준으로 물체를 제어합니다.</p>
-            <div class="flex gap-2 my-2">
-                <span class="property-tag">Position</span>
-                <span class="property-tag">Scale</span>
-                <span class="property-tag">Rotation</span>
-            </div>
-            <pre><code class="language-javascript">// 개별 축 제어
+      <section id="transform">
+        <h2>3. 좌표 및 변형 (Transform)</h2>
+        <p>오른손 좌표계를 기준으로 물체를 제어합니다.</p>
+        <div class="flex gap-2 my-2">
+          <span class="property-tag">Position</span>
+          <span class="property-tag">Scale</span>
+          <span class="property-tag">Rotation</span>
+        </div>
+        <pre><code class="language-javascript">// 개별 축 제어
 mesh.position.x = 2
 mesh.scale.y = 0.5
 mesh.rotation.z = Math.PI * 0.25 // 45도
 
 // 한 번에 설정
 mesh.position.set(1, 2, 3)</code></pre>
-        </section>
+      </section>
 
-        <section id="group">
-            <h2>4. 그룹화 (Scene Graph)</h2>
-            <p>여러 개의 Mesh를 <code>Group</code>에 담으면 부모의 움직임을 자식이 그대로 따릅니다.</p>
-            <pre><code class="language-javascript">const group = new THREE.Group()
+      <section id="group">
+        <h2>4. 그룹화 (Scene Graph)</h2>
+        <p>
+          여러 개의 Mesh를 <code>Group</code>에 담으면 부모의 움직임을 자식이
+          그대로 따릅니다.
+        </p>
+        <pre><code class="language-javascript">const group = new THREE.Group()
 scene.add(group)
 
 const cube1 = new THREE.Mesh(...)
 group.add(cube1)
 
 group.rotation.y = 1 // 그룹 전체가 회전</code></pre>
-        </section>
+      </section>
 
-        <section id="camera">
-            <h2>5. 카메라 상세 설정</h2>
-            <p>PerspectiveCamera는 원근법을 제공합니다.</p>
-            
-            <pre><code class="language-javascript">const camera = new THREE.PerspectiveCamera(
+      <section id="camera">
+        <h2>5. 카메라 상세 설정</h2>
+        <p>PerspectiveCamera는 원근법을 제공합니다.</p>
+
+        <pre><code class="language-javascript">const camera = new THREE.PerspectiveCamera(
     75, // fov: 시야각 (세로 방향)
     sizes.width / sizes.height, // aspect: 종횡비
     0.1, // near: 이보다 가까우면 안 보임
     100 // far: 이보다 멀면 안 보임
 )</code></pre>
-        </section>
+      </section>
 
-        <section id="animation">
-            <h2>6. 애니메이션 (Loop & GSAP)</h2>
-            <p>화면을 매 프레임 다시 그리는 루프를 생성합니다.</p>
-            <div class="callout" style="background-color: #ebf5fe;">
-                <span class="callout-emoji">🚀</span>
-                <div>
-                    <strong>GSAP:</strong> 복잡한 애니메이션을 구현할 때 사용하는 표준 라이브러리입니다.
-                </div>
-            </div>
-            <pre><code class="language-javascript">const clock = new THREE.Clock()
+      <section id="animation">
+        <h2>6. 애니메이션 (Loop & GSAP)</h2>
+        <p>화면을 매 프레임 다시 그리는 루프를 생성합니다.</p>
+        <div class="callout" style="background-color: #ebf5fe">
+          <span class="callout-emoji">🚀</span>
+          <div>
+            <strong>GSAP:</strong> 복잡한 애니메이션을 구현할 때 사용하는 표준
+            라이브러리입니다.
+          </div>
+        </div>
+        <pre><code class="language-javascript">const clock = new THREE.Clock()
 
 const tick = () => {
     const elapsedTime = clock.getElapsedTime()
@@ -193,30 +287,46 @@ tick()
 
 // GSAP 예시
 gsap.to(mesh.position, { duration: 1, x: 2 })</code></pre>
-        </section>
+      </section>
 
-        <hr class="my-12 border-gray-200">
+      <hr class="my-12 border-gray-200" />
 
-        <section id="geometry-deep">
-            <h2>7. Geometry (기하학적 구조) 심화</h2>
-            <h3>BufferGeometry (저수준 데이터 구조)</h3>
-            <p>개발자가 BufferGeometry를 수동으로 구축할 때는 단순히 "도형을 그린다"는 느낌보다 <strong>"메모리 레이아웃을 설계한다"</strong>는 관점으로 접근해야 합니다.</p>
-            
-            <ul class="list-disc ml-5 space-y-2 mb-4">
-                <li><strong>Buffer의 정의:</strong> GPU가 즉각적으로 읽고 처리할 수 있도록 최적화된 연속적인 메모리 덩어리입니다.</li>
-                <li><strong>자산으로서의 가치:</strong> 모든 빌트인 도형은 내부적으로 이를 상속받습니다. 직접 생성 시에는 비어있는 버퍼에서 시작합니다.</li>
-                <li><strong>Typed Array (Float32Array):</strong> 일반 JS 배열보다 훨씬 빠르며, GPU 전송 표준 규격입니다. 선언 시 데이터 크기가 고정되며 GPU 메모리 자리를 미리 예약하는 과정입니다.</li>
-            </ul>
+      <section id="geometry-deep">
+        <h2>7. Geometry (기하학적 구조) 심화</h2>
+        <h3>BufferGeometry (저수준 데이터 구조)</h3>
+        <p>
+          개발자가 BufferGeometry를 수동으로 구축할 때는 단순히 "도형을
+          그린다"는 느낌보다 <strong>"메모리 레이아웃을 설계한다"</strong>는
+          관점으로 접근해야 합니다.
+        </p>
 
-            <div class="callout">
-                <span class="callout-emoji">💡</span>
-                <div>
-                    <strong>Vertex Attributes:</strong> <code>BufferAttribute</code>는 단순한 숫자 배열에 <strong>'의미'</strong>를 부여합니다. 예: <code>(array, 3)</code> ➜ "숫자 3개가 하나의 정점(x, y, z)이다"
-                </div>
-            </div>
+        <ul class="list-disc ml-5 space-y-2 mb-4">
+          <li>
+            <strong>Buffer의 정의:</strong> GPU가 즉각적으로 읽고 처리할 수
+            있도록 최적화된 연속적인 메모리 덩어리입니다.
+          </li>
+          <li>
+            <strong>자산으로서의 가치:</strong> 모든 빌트인 도형은 내부적으로
+            이를 상속받습니다. 직접 생성 시에는 비어있는 버퍼에서 시작합니다.
+          </li>
+          <li>
+            <strong>Typed Array (Float32Array):</strong> 일반 JS 배열보다 훨씬
+            빠르며, GPU 전송 표준 규격입니다. 선언 시 데이터 크기가 고정되며 GPU
+            메모리 자리를 미리 예약하는 과정입니다.
+          </li>
+        </ul>
 
-            <h3>코드 작성 흐름 및 기술적 디테일</h3>
-            <pre><code class="language-javascript">// Step 1 & 2: Raw Data 생성 및 구조화
+        <div class="callout">
+          <span class="callout-emoji">💡</span>
+          <div>
+            <strong>Vertex Attributes:</strong> <code>BufferAttribute</code>는
+            단순한 숫자 배열에 <strong>'의미'</strong>를 부여합니다. 예:
+            <code>(array, 3)</code> ➜ "숫자 3개가 하나의 정점(x, y, z)이다"
+          </div>
+        </div>
+
+        <h3>코드 작성 흐름 및 기술적 디테일</h3>
+        <pre><code class="language-javascript">// Step 1 & 2: Raw Data 생성 및 구조화
 const positionsArray = new Float32Array([0, 0, 0, 0, 1, 0, 1, 0, 0]) 
 const positionsAttribute = new THREE.BufferAttribute(positionsArray, 3)
 
@@ -224,32 +334,44 @@ const positionsAttribute = new THREE.BufferAttribute(positionsArray, 3)
 const geometry = new THREE.BufferGeometry()
 geometry.setAttribute('position', positionsAttribute)</code></pre>
 
-            <div class="flex gap-2 my-2">
-                <span class="property-tag">선형 메모리 배치</span>
-                <span class="property-tag">Non-indexed</span>
-                <span class="property-tag">삼각형 자동 생성</span>
-            </div>
+        <div class="flex gap-2 my-2">
+          <span class="property-tag">선형 메모리 배치</span>
+          <span class="property-tag">Non-indexed</span>
+          <span class="property-tag">삼각형 자동 생성</span>
+        </div>
 
-            <div class="callout" style="background-color: #fff9db;">
-                <span class="callout-emoji">🧐</span>
-                <div>
-                    <strong>왜 랜덤 점들이 포개졌나:</strong> 별도의 인덱스가 없으면 정점 배열을 <strong>3개씩 끊어서 삼각형(Face)</strong>을 자동 생성합니다. 정점 간 논리적 연결이 없으면 공간상에서 삼각형들이 제각각 겹치고 파편화된 모습이 나타납니다.
-                </div>
-            </div>
-        </section>
+        <div class="callout" style="background-color: #fff9db">
+          <span class="callout-emoji">🧐</span>
+          <div>
+            <strong>왜 랜덤 점들이 포개졌나:</strong> 별도의 인덱스가 없으면
+            정점 배열을 <strong>3개씩 끊어서 삼각형(Face)</strong>을 자동
+            생성합니다. 정점 간 논리적 연결이 없으면 공간상에서 삼각형들이
+            제각각 겹치고 파편화된 모습이 나타납니다.
+          </div>
+        </div>
+      </section>
 
-        <section id="debug-ui">
-            <h2>8. Debug UI (lil-gui) 활용</h2>
-            <p>실시간으로 속성값을 변경하며 최적의 비주얼을 찾는 도구입니다.</p>
-            
-            <ul class="list-disc ml-5 space-y-1 mb-4">
-                <li><strong>UI 트윅 구성:</strong> 반드시 객체의 특정 속성을 인자로 받습니다.</li>
-                <li><strong>Range:</strong> min, max, step을 설정하여 슬라이더를 생성합니다.</li>
-                <li><strong>Color:</strong> Color Space 관리 문제로 <code>debugObject</code>를 거점으로 사용하는 것이 권장됩니다.</li>
-                <li><strong>Folder:</strong> 관련 트윅들을 그룹화하여 관리합니다.</li>
-            </ul>
+      <section id="debug-ui">
+        <h2>8. Debug UI (lil-gui) 활용</h2>
+        <p>실시간으로 속성값을 변경하며 최적의 비주얼을 찾는 도구입니다.</p>
 
-            <pre><code class="language-javascript">const gui = new lil.GUI()
+        <ul class="list-disc ml-5 space-y-1 mb-4">
+          <li>
+            <strong>UI 트윅 구성:</strong> 반드시 객체의 특정 속성을 인자로
+            받습니다.
+          </li>
+          <li>
+            <strong>Range:</strong> min, max, step을 설정하여 슬라이더를
+            생성합니다.
+          </li>
+          <li>
+            <strong>Color:</strong> Color Space 관리 문제로
+            <code>debugObject</code>를 거점으로 사용하는 것이 권장됩니다.
+          </li>
+          <li><strong>Folder:</strong> 관련 트윅들을 그룹화하여 관리합니다.</li>
+        </ul>
+
+        <pre><code class="language-javascript">const gui = new lil.GUI()
 const debugObject = { color: '#ff0000' }
 
 gui.add(mesh.position, 'y').min(-3).max(3).step(0.01).name('elevation')
@@ -259,33 +381,41 @@ gui.addColor(debugObject, 'color').onChange(() => {
 
 // 이벤트 리스너
 // onChange(): 즉시 실행 | onFinishChange(): 조작이 멈췄을 때 실행 (부하 큰 작업용)</code></pre>
-        </section>
+      </section>
 
-        <section id="optimization">
-            <h2>9. 성능 최적화 및 메모리 관리</h2>
-            <p>웹 환경의 한정된 자원을 효율적으로 사용하기 위한 필수 전략입니다.</p>
+      <section id="optimization">
+        <h2>9. 성능 최적화 및 메모리 관리</h2>
+        <p>웹 환경의 한정된 자원을 효율적으로 사용하기 위한 필수 전략입니다.</p>
 
-            <div class="callout" style="background-color: #f8f0fc;">
-                <span class="callout-emoji">⚠️</span>
-                <div>
-                    <strong>GPU 메모리 해제:</strong> JS 가비지 컬렉터는 GPU의 버퍼 데이터를 스스로 지우지 못합니다. 지오메트리 교체 시 반드시 <code>mesh.geometry.dispose()</code>를 명시적으로 호출하세요.
-                </div>
-            </div>
+        <div class="callout" style="background-color: #f8f0fc">
+          <span class="callout-emoji">⚠️</span>
+          <div>
+            <strong>GPU 메모리 해제:</strong> JS 가비지 컬렉터는 GPU의 버퍼
+            데이터를 스스로 지우지 못합니다. 지오메트리 교체 시 반드시
+            <code>mesh.geometry.dispose()</code>를 명시적으로 호출하세요.
+          </div>
+        </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
-                <div class="p-4 border rounded">
-                    <div class="font-bold mb-1">Pixel Ratio</div>
-                    <p class="text-sm text-gray-600"><code>Math.min(window.devicePixelRatio, 2)</code>를 사용하여 고해상도 선명도와 성능의 균형을 맞춥니다.</p>
-                </div>
-                <div class="p-4 border rounded">
-                    <div class="font-bold mb-1">Aspect Ratio</div>
-                    <p class="text-sm text-gray-600">창 크기 조절 시 카메라 aspect 수정 후 <code>updateProjectionMatrix()</code> 호출은 필수입니다.</p>
-                </div>
-            </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+          <div class="p-4 border rounded">
+            <div class="font-bold mb-1">Pixel Ratio</div>
+            <p class="text-sm text-gray-600">
+              <code>Math.min(window.devicePixelRatio, 2)</code>를 사용하여
+              고해상도 선명도와 성능의 균형을 맞춥니다.
+            </p>
+          </div>
+          <div class="p-4 border rounded">
+            <div class="font-bold mb-1">Aspect Ratio</div>
+            <p class="text-sm text-gray-600">
+              창 크기 조절 시 카메라 aspect 수정 후
+              <code>updateProjectionMatrix()</code> 호출은 필수입니다.
+            </p>
+          </div>
+        </div>
 
-            <h3>OrbitControls & Damping</h3>
-            <p>카메라 이동에 관성(부드러운 가속/감속)을 추가합니다.</p>
-            <pre><code class="language-javascript">const controls = new OrbitControls(camera, canvas)
+        <h3>OrbitControls & Damping</h3>
+        <p>카메라 이동에 관성(부드러운 가속/감속)을 추가합니다.</p>
+        <pre><code class="language-javascript">const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
 
 // tick 함수 내부에서 매 프레임 업데이트 필수!
@@ -294,16 +424,16 @@ const tick = () => {
     renderer.render(scene, camera)
     window.requestAnimationFrame(tick)
 }</code></pre>
-        </section>
+      </section>
 
-        <footer class="mt-20 pt-10 border-t text-sm text-gray-400 text-center">
-            © 2026 Younghak. Study hard and Build Great Things.
-        </footer>
+      <footer class="mt-20 pt-10 border-t text-sm text-gray-400 text-center">
+        © 2026 Younghak. Study hard and Build Great Things.
+      </footer>
     </div>
 
     <script>
-        // 코드 하이라이팅 적용
-        hljs.highlightAll();
+      // 코드 하이라이팅 적용
+      hljs.highlightAll();
     </script>
-</body>
+  </body>
 </html>
